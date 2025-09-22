@@ -1,0 +1,193 @@
+[
+  {
+    "description": "The foundation where reality began to fracture. Basic anomalies plague the system startup.",
+    "order": 1,
+    "name": "BOOT SECTOR",
+    "id": "iOd46MWpGpbVafzxIgwP",
+    "challenges": [
+      {
+        "flag": "PIXEL{c00k1e_m0nst3r_h4s_4dm1n_p0w3r}",
+        "points": 150,
+        "description": "We've intercepted a session cookie from an admin. It looks like it's just Base64 encoded. Decode it and modify it to gain admin access.",
+        "sourceFiles": [
+          {
+            "fileName": "favicon.ico",
+            "filePath": "uploads/favicon.ico"
+          }
+        ],
+        "hints": [
+          "The cookie might be a JSON object after being decoded.",
+          "Change a value like 'isAdmin' from false to true, then re-encode it to Base64 and replace your current cookie."
+        ],
+        "zoneId": "iOd46MWpGpbVafzxIgwP",
+        "title": "Cookie Jar",
+        "difficulty": "Medium",
+        "id": "4pDvmUNSFdCTeJ4I2kP7",
+        "isSolved": false
+      },
+      {
+        "flag": "BreachPoint{through_errors_we_learn}",
+        "points": 50,
+        "description": "A weary traveler’s tale hides more than misfortune — each stumble, scar, and strange star points toward a single word that will guide the way. Use this word as the rhythm to which every letter of the message must dance, until its true form begins to emerge. When the path ends, turn what you see upon the alphabet’s mirror to discover what lies beyond.",
+        "sourceFiles": [
+          {
+            "fileName": "tale_of_traveler.txt",
+            "filePath": "uploads/tale_of_traveler.txt"
+          }
+        ],
+        "hints": [
+          "Think about using the key from traveler’s tale with a classical polyalphabetic   cipher"
+        ],
+        "zoneId": "iOd46MWpGpbVafzxIgwP",
+        "title": "Traveler’s Key",
+        "difficulty": "Easy",
+        "id": "HFWgcwfo6OJViO8mu7Xm",
+        "isSolved": false
+      },
+      {
+        "points": 50,
+        "description": "The developer of this login page left a secret comment in the HTML for testing purposes. Find the credentials hidden in the page source.",
+        "sourceFiles": [
+          {
+            "fileName": "BreachPoint.png",
+            "filePath": "uploads/BreachPoint.png"
+          }
+        ],
+        "hints": [
+          "Most browsers let you view the page source by right-clicking and selecting 'View Page Source'.",
+          "Look for HTML comments, which typically start with <!--"
+        ],
+        "zoneId": "iOd46MWpGpbVafzxIgwP",
+        "title": "Source Seeker",
+        "difficulty": "Easy",
+        "id": "e8aUfYvRQ7pAe1Qrli1U",
+        "isSolved": false
+      }
+    ]
+  },
+  {
+    "description": "Once green algorithms now twisted into malformed data structures.",
+    "order": 2,
+    "name": "CORRUPTED FOREST",
+    "id": "TQi46NL91DJtDbHViQCd",
+    "challenges": [
+      {
+        "flag": "BREACHPOINT{123456789}",
+        "points": 103,
+        "description": "Dummy challenge Description for 112",
+        "hints": [
+          "hello",
+          "world",
+          "hint",
+          "king",
+          "queen",
+          "joken"
+        ],
+        "zoneId": "TQi46NL91DJtDbHViQCd",
+        "title": "Dummy Challenge 112",
+        "difficulty": "Medium",
+        "id": "CT9DR4dbsau7lUwtRtDy",
+        "isSolved": false
+      },
+      {
+        "flag": "BreachPoint{m0r53c0d3}",
+        "points": 50,
+        "description": "Welcome, Agent.\nYou’ve been recruited to test a classified encryption device known as the Encryption Engine. Its purpose: securely store sensitive mission data encoded in Morse code. But the system designers were… overconfident. A careless oversight in the input handling has left the device vulnerable to a classic format string flaw.\nYour mission is to retrieve the hidden flag. The flag is encoded in Morse code and stored in memory with no direct way to print it. Only by carefully exploiting the format string vulnerability can you reveal the encoded data. Once revealed, you must decode the Morse to complete your mission.\n",
+        "sourceFiles": [
+          {
+            "fileName": "dot dash",
+            "filePath": "https://drive.google.com/file/d/1W6JjCq8wk3WR8wQzRmYB_2_mPt--Bq07/view?usp=drive_link"
+          }
+        ],
+        "hints": [
+          "Reading from memory (Specifically stack exploitation)",
+          "Be aware of noise"
+        ],
+        "zoneId": "TQi46NL91DJtDbHViQCd",
+        "title": "dot Dash",
+        "difficulty": "Easy",
+        "id": "sMjuL4LyZO8xc2vi6QYt",
+        "isSolved": false
+      }
+    ]
+  },
+  {
+    "description": "Digital metropolis where network protocols have gone rogue.",
+    "order": 3,
+    "name": "BROKEN CITY",
+    "id": "M4lBUyQiztTxMkrhAA5R",
+    "challenges": [
+      {
+        "flag": "PIXEL{flag}",
+        "points": 138,
+        "description": "File Challenge Sources",
+        "sourceFiles": [
+          {
+            "fileName": "Edit Code.txt",
+            "filePath": "uploads/Edit Code.txt"
+          }
+        ],
+        "hints": [
+          "acv",
+          "cd",
+          "ls",
+          "cd",
+          "hello world.",
+          "asdsds"
+        ],
+        "zoneId": "M4lBUyQiztTxMkrhAA5R",
+        "title": "File Challenge",
+        "difficulty": "Hard",
+        "id": "Ooe2Mg1KgnlrRa3XeX1Q",
+        "isSolved": false
+      }
+    ]
+  },
+  {
+    "description": "The heart of the system where the deepest anomalies hide.",
+    "order": 4,
+    "name": "KERNEL CORE",
+    "id": "4eNV8iDVEZNmD6G60vzg",
+    "challenges": [
+      {
+        "flag": "bpflag",
+        "points": 137,
+        "description": "SSS",
+        "hints": [
+          "a",
+          "c",
+          "vasdasd\nasd\nsd"
+        ],
+        "zoneId": "4eNV8iDVEZNmD6G60vzg",
+        "title": "SSS",
+        "difficulty": "Medium",
+        "id": "G5098jTR9IWx6IlzXvSQ",
+        "isSolved": true
+      }
+    ]
+  },
+  {
+    "description": "Dummy zone creation for testing purpose",
+    "order": 5,
+    "name": "Dummy Zone",
+    "id": "p7JAX0VNBFDhGu8nZ5lF",
+    "challenges": [
+      {
+        "flag": "flag",
+        "points": 53,
+        "description": "acas",
+        "hints": [
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "zoneId": "p7JAX0VNBFDhGu8nZ5lF",
+        "title": "ase",
+        "difficulty": "Insane",
+        "id": "T6Qf5KCpTnCZOG0sA20F",
+        "isSolved": true
+      }
+    ]
+  }
+]

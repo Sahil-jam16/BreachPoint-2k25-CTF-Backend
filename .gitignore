@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+*.env
+
+dyla-diva-style-quiz-app-firebase-adminsdk-fbsvc-24c35336a3.json
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store

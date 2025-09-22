@@ -1,0 +1,100 @@
+import hashlib
+from fastapi import APIRouter, Depends, HTTPException, status
+from schemas import FlagSubmit
+from auth import get_current_team
+from config.firebase_config import db
+from firebase_admin import firestore
+
+# This prefix organizes the team-specific routes
+router = APIRouter(prefix="/challenges", tags=["Challenges"])
+
+@router.get("/zones")
+async def get_all_zones_with_challenges(current_team: dict = Depends(get_current_team)):
+    """
+    Fetches all zones and nests their corresponding challenges within them.
+    """
+    try:
+        zones_ref = db.collection('zones_bp').order_by('order').stream()
+        challenges_ref = db.collection('challenges_bp').stream()
+        
+        solved_ids = set(current_team.get('solvedChallenges', []))
+        
+        zones_dict = {}
+        for zone in zones_ref:
+            zone_data = zone.to_dict()
+            zone_data['id'] = zone.id
+            zone_data['challenges'] = []
+            zones_dict[zone.id] = zone_data
+            
+        for challenge in challenges_ref:
+            challenge_data = challenge.to_dict()
+            zone_id = challenge_data.get('zoneId')
+            
+            if zone_id in zones_dict:
+                challenge_data.pop('flagHash', None) 
+                challenge_data['id'] = challenge.id
+                challenge_data['isSolved'] = challenge.id in solved_ids
+                zones_dict[zone_id]['challenges'].append(challenge_data)
+        
+        return list(zones_dict.values())
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@router.post("/submit", status_code=status.HTTP_200_OK)
+async def submit_flag(submission: FlagSubmit, current_team: dict = Depends(get_current_team)):
+    """
+    Submits a flag, evaluates it, and updates the team's score in a secure transaction.
+    """
+    team_id = current_team['id']
+    
+    challenge_ref = db.collection('challenges_bp').document(submission.challengeId)
+    challenge_doc = challenge_ref.get()
+
+    if not challenge_doc.exists:
+        raise HTTPException(status_code=404, detail="Challenge not found.")
+
+    challenge_data = challenge_doc.to_dict()
+    
+    # Prevent re-submission for points
+    if submission.challengeId in current_team.get('solvedChallenges', []):
+        return {"status": "already_solved", "message": "Your team has already solved this challenge."}
+    
+    # Securely hash the submitted flag for comparison
+    submitted_flag_hash = hashlib.sha256(submission.flag.encode()).hexdigest()
+    is_correct = submitted_flag_hash == challenge_data['flagHash']
+
+    # Log every attempt for analytics
+    db.collection('submissions_bp').add({
+        "challengeId": submission.challengeId,
+        "teamId": team_id,
+        "isCorrect": is_correct,
+        "timestamp": firestore.SERVER_TIMESTAMP
+    })
+
+    if not is_correct:
+        raise HTTPException(status_code=400, detail="Incorrect flag.")
+    
+    # If correct, start a transaction to update the score
+    team_ref = db.collection('teams_bp').document(team_id)
+    
+    @firestore.transactional
+    def update_score_in_transaction(transaction, team_ref_to_update):
+        team_snapshot = team_ref_to_update.get(transaction=transaction)
+        current_score = team_snapshot.to_dict().get('score', 0)
+        new_score = current_score + challenge_data['points']
+        
+        # Atomically update score, timestamp, and solved challenges
+        transaction.update(team_ref_to_update, {
+            "score": new_score,
+            "lastSubmissionTimestamp": firestore.SERVER_TIMESTAMP,
+            "solvedChallenges": firestore.ArrayUnion([submission.challengeId])
+        })
+        return new_score
+
+    transaction = db.transaction()
+    final_score = update_score_in_transaction(transaction, team_ref)
+
+    return {"status": "correct", "message": "Correct flag! Score updated.", "new_score": final_score}
+
