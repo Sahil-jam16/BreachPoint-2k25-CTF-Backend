@@ -11,10 +11,10 @@ app = FastAPI(
 # --- CORRECT CORS Configuration ---
 # This list only contains the URLs of the frontends that need access.
 origins = [
-    "http://localhost:8081",  # Your local frontend dev server
-    "http://localhost:5173",
-    "http://127.0.0.1:8081",
-
+    # "http://localhost:8081",  # Your local frontend dev server
+    # "http://localhost:5173",
+    # "http://127.0.0.1:8081",
+    '*'
     # When you deploy your frontend, add its live URL here.
     # For example: "https://breachpoint-frontend.vercel.app"
 ]
