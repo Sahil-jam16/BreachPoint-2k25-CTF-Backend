@@ -78,10 +78,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # The 'sub' (subject) of the token is the team's document ID in Firestore
     access_token = create_access_token(data={"sub": team_id})
     return {"access_token": access_token, "token_type": "bearer"}
-
 
 @router.get("/leaderboard", status_code=status.HTTP_200_OK)
 async def get_leaderboard():

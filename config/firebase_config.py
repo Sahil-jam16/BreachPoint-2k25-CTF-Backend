@@ -15,7 +15,7 @@ try:
     cred = credentials.Certificate(SERVICE_ACCOUNT_KEY_PATH)
     firebase_admin.initialize_app(cred, {
         'storageBucket': os.getenv("FIREBASE_STORAGE_BUCKET")
-    })
+    })  
     print("✅ Firebase initialized successfully.")
 except Exception as e:
     print(f"🔥 Firebase initialization failed: {e}")
