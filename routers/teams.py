@@ -12,11 +12,21 @@ router = APIRouter(prefix="/teams", tags=["Teams"])
 # Setup for password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# def verify_password(plain_password, hashed_password):
+#     return pwd_context.verify(plain_password, hashed_password)
+
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    # Truncate password to 72 bytes to comply with bcrypt limitation
+    truncated_password = plain_password[:72]
+    return pwd_context.verify(truncated_password, hashed_password)
+
+# def get_password_hash(password):
+#     return pwd_context.hash(password)
 
 def get_password_hash(password):
-    return pwd_context.hash(password)
+    # Truncate password to 72 bytes before hashing to ensure consistency
+    truncated_password = password[:72]
+    return pwd_context.hash(truncated_password)
 
 @router.get("/me", status_code=status.HTTP_200_OK)
 async def read_team_me(current_team: dict = Depends(get_current_team)):
