@@ -1,10 +1,10 @@
 import os
 import hashlib
 import json
-from fastapi import APIRouter, Depends, HTTPException, status, Header, UploadFile, File, Form
-from typing import Optional, List
 import re
-
+from fastapi import APIRouter, Depends, HTTPException, status, Header
+from typing import Optional, List
+from datetime import datetime
 
 from config.firebase_config import db
 from schemas import ZoneCreate, ChallengeCreate
@@ -59,6 +59,8 @@ async def create_zone(zone_data: ZoneCreate):
     }
 
 
+
+
 @router.post("/challenges", status_code=status.HTTP_201_CREATED)
 async def create_challenge(challenge_data: ChallengeCreate):
     """
@@ -106,3 +108,52 @@ async def list_all_challenges():
         challenges_list.append(challenge_data)
         
     return challenges_list
+
+
+# -------------------------------
+# Leaderboard & Submissions Endpoints
+# -------------------------------
+@router.get("/leaderboard", status_code=status.HTTP_200_OK)
+async def get_leaderboard():
+    """
+    Returns leaderboard with team scores, solved challenge count,
+    and last submission time.
+    """
+    teams_ref = db.collection("teams_bp")
+    teams = teams_ref.stream()
+
+    leaderboard = []
+    for team in teams:
+        data = team.to_dict()
+        leaderboard.append({
+            "teamId": team.id,
+            "score": data.get("score", 0),
+            "solvedChallenges": len(data.get("solvedChallenges", [])),
+            "lastSubmission": str(data.get("lastSubmissionTimestamp")) if data.get("lastSubmissionTimestamp") else None
+        })
+
+    # Sort: highest score first, then earliest last submission
+    leaderboard.sort(key=lambda x: (-x["score"], x["lastSubmission"] or datetime.max))
+    return leaderboard
+
+@router.get("/submissions", status_code=status.HTTP_200_OK)
+async def get_submissions():
+    """
+    Returns a log of all submissions with team, challenge, correctness, and timestamp.
+    """
+    submissions_ref = db.collection("submissions_bp")
+    submissions = submissions_ref.stream()
+
+    submissions_list = []
+    for sub in submissions:
+        data = sub.to_dict()
+        submissions_list.append({
+            "submissionId": sub.id,
+            "teamId": data.get("teamId"),
+            "challengeId": data.get("challengeId"),
+            "isCorrect": data.get("isCorrect", False),
+            "timestamp": str(data.get("timestamp"))
+        })
+
+    submissions_list.sort(key=lambda x: x["timestamp"], reverse=True)
+    return submissions_list
