@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from passlib.context import CryptContext
+#from passlib.context import CryptContext
 from firebase_admin.firestore import firestore
+import bcrypt
 
 from auth import create_access_token, get_current_team
 from config.firebase_config import db
@@ -9,23 +10,30 @@ from schemas import TeamAuth, Token
 
 router = APIRouter(prefix="/teams", tags=["Teams"])
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+#pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # def verify_password(plain_password, hashed_password):
 #     return pwd_context.verify(plain_password, hashed_password)
 
 def verify_password(plain_password, hashed_password):
     # Truncate password to 72 bytes to comply with bcrypt limitation
-    truncated_password = plain_password[:72]
-    return pwd_context.verify(truncated_password, hashed_password)
+    truncated_password = plain_password[:72].encode('utf-8')
+    # Encode the stored hash back to bytes for comparison
+    hashed_password_bytes = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(truncated_password, hashed_password_bytes)
 
 # def get_password_hash(password):
 #     return pwd_context.hash(password)
 
+# 4. UPDATED: Replaced with a direct bcrypt implementation
 def get_password_hash(password):
-    # Truncate password to 72 bytes before hashing to ensure consistency
-    truncated_password = password[:72]
-    return pwd_context.hash(truncated_password)
+    # Truncate password to 72 bytes before hashing
+    truncated_password = password[:72].encode('utf-8')
+    # Generate a salt and hash the password
+    salt = bcrypt.gensalt()
+    hashed_bytes = bcrypt.hashpw(truncated_password, salt)
+    # Decode the bytes to a string to store in Firestore
+    return hashed_bytes.decode('utf-8')
 
 @router.get("/me", status_code=status.HTTP_200_OK)
 async def read_team_me(current_team: dict = Depends(get_current_team)):

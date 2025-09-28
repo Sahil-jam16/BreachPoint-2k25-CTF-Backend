@@ -2,9 +2,8 @@ fastapi
 uvicorn[standard]
 python-dotenv
 firebase-admin
-passlib
 python-jose[cryptography]
 python-multipart
 pydantic
-bcrypt>=3.2.2
+bcrypt
 jwt
