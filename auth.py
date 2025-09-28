@@ -2,10 +2,10 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from firebase_admin import auth
 from config.firebase_config import db
-import os, jwt
+import os
 from datetime import datetime, timedelta
 #import load_dotenv
-
+from jose import jwt, JWTError
 from typing import Optional
 
 
@@ -22,6 +22,7 @@ def create_access_token(data: dict):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
 
 # --- Dependency to get current team ---
 async def get_current_team(token: str = Depends(oauth2_scheme)):
