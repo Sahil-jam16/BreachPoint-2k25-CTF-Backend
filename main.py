@@ -15,7 +15,7 @@ origins = [
     "http://localhost:5173",
     "http://127.0.0.1:8081",
     "https://breachpoint-backend-api.onrender.com",
-    '*'
+    "https://breachpoint-2k25-ctf.pages.dev/"
 ]
 
 app.add_middleware(
