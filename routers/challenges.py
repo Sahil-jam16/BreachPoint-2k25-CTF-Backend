@@ -56,6 +56,8 @@ async def submit_flag(submission: FlagSubmit, current_team: dict = Depends(get_c
         raise HTTPException(status_code=404, detail="Challenge not found.")
 
     challenge_data = challenge_doc.to_dict()
+
+    print(challenge_data)
     
     # Prevent re-submission for points
     if submission.challengeId in current_team.get('solvedChallenges', []):
@@ -68,7 +70,10 @@ async def submit_flag(submission: FlagSubmit, current_team: dict = Depends(get_c
     # Log every attempt for analytics
     db.collection('submissions_bp').add({
         "challengeId": submission.challengeId,
+        "challengeTitle": challenge_data['title'],        
         "teamId": team_id,
+        "teamName": current_team.get('teamName', 'Unknown Team'),
+        "submittedFlag": submission.flag,
         "isCorrect": is_correct,
         "timestamp": firestore.SERVER_TIMESTAMP
     })

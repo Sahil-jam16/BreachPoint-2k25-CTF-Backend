@@ -10,9 +10,9 @@ load_dotenv()
 # For security, load this from an environment variable or a secure location
 #SERVICE_ACCOUNT_KEY_PATH = os.getenv("SERVICE_ACCOUNT_KEY_PATH", r"D:\Axios - Breachpoint\CTF Website\Backend_BreachPoint\dyla-diva-style-quiz-app-firebase-adminsdk-fbsvc-24c35336a3.json")
 
-#SERVICE_ACCOUNT_KEY_PATH = os.getenv("SERVICE_ACCOUNT_KEY_PATH_LOCAL")
+SERVICE_ACCOUNT_KEY_PATH = os.getenv("SERVICE_ACCOUNT_KEY_PATH_LOCAL")
 
-SERVICE_ACCOUNT_KEY_PATH = os.getenv("SERVICE_ACCOUNT_KEY_PATH")
+#SERVICE_ACCOUNT_KEY_PATH = os.getenv("SERVICE_ACCOUNT_KEY_PATH")
 
 try:
     cred = credentials.Certificate(SERVICE_ACCOUNT_KEY_PATH)

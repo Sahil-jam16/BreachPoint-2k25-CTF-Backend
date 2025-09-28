@@ -9,7 +9,6 @@ from schemas import TeamAuth, Token
 
 router = APIRouter(prefix="/teams", tags=["Teams"])
 
-# Setup for password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # def verify_password(plain_password, hashed_password):
@@ -120,7 +119,7 @@ async def get_leaderboard():
             team_data['id'] = doc.id
             
             leaderboard_data.append(team_data)
-            
+        print(leaderboard_data)
         return leaderboard_data
         
     except Exception as e:

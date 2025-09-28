@@ -59,8 +59,6 @@ async def create_zone(zone_data: ZoneCreate):
     }
 
 
-
-
 @router.post("/challenges", status_code=status.HTTP_201_CREATED)
 async def create_challenge(challenge_data: ChallengeCreate):
     """
@@ -127,6 +125,7 @@ async def get_leaderboard():
         data = team.to_dict()
         leaderboard.append({
             "teamId": team.id,
+            "teamName": data.get("teamName", "Unknown Team"),
             "score": data.get("score", 0),
             "solvedChallenges": len(data.get("solvedChallenges", [])),
             "lastSubmission": str(data.get("lastSubmissionTimestamp")) if data.get("lastSubmissionTimestamp") else None
@@ -139,21 +138,31 @@ async def get_leaderboard():
 @router.get("/submissions", status_code=status.HTTP_200_OK)
 async def get_submissions():
     """
-    Returns a log of all submissions with team, challenge, correctness, and timestamp.
+    Returns a log of all submissions with team name, challenge, correctness, and timestamp.
     """
-    submissions_ref = db.collection("submissions_bp")
+    # 1. First, create a map of team IDs to team names for efficient lookup.
+    teams_ref = db.collection("teams_bp")
+    team_map = {team.id: team.to_dict().get("teamName", "Unknown") for team in teams_ref.stream()}
+
+    # 2. Then, get all submissions.
+    submissions_ref = db.collection("submissions_bp").order_by("timestamp", direction="DESCENDING")
     submissions = submissions_ref.stream()
 
     submissions_list = []
     for sub in submissions:
         data = sub.to_dict()
+        team_id = data.get("teamId")
+        
         submissions_list.append({
             "submissionId": sub.id,
-            "teamId": data.get("teamId"),
+            "teamId": team_id,
+            "teamName": team_map.get(team_id, "Unknown Team"), # 3. Use the map to get the name
             "challengeId": data.get("challengeId"),
+            "challengeTitle": data.get("challengeTitle", "Unknown Challenge"),
             "isCorrect": data.get("isCorrect", False),
             "timestamp": str(data.get("timestamp"))
         })
-
-    submissions_list.sort(key=lambda x: x["timestamp"], reverse=True)
+        
+    # Sorting is now handled by the Firestore query, but this is a safe fallback.
+    # submissions_list.sort(key=lambda x: x["timestamp"], reverse=True)
     return submissions_list

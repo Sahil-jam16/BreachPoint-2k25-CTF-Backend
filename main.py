@@ -14,6 +14,7 @@ origins = [
     "http://localhost:8081",  # Your local frontend dev server
     "http://localhost:5173",
     "http://127.0.0.1:8081",
+    "https://breachpoint-backend-api.onrender.com",
     '*'
 ]
 
